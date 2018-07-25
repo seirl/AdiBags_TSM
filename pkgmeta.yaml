@@ -1,0 +1,5 @@
+package-as: AdiBags_TSM
+ignore:
+    - README.md
+    - pkgmeta.yaml
+    - screenshots

@@ -1,0 +1,10 @@
+## Interface: 80000
+
+## Title: AdiBags - Filter for TSM Groups
+## Notes: Adds TSM groups to AdiBags.
+## Author: seirl
+## Version: 0.1
+
+## Dependencies: AdiBags TradeSkillMaster
+
+AdiBags_TSM.lua
