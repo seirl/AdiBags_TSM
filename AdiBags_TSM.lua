@@ -57,18 +57,6 @@ function setFilter:Filter(slotData)
   until (tsmpath == nil or tsmpath == "")
 end
 
---[[ Get all the TSM group strings ]]
-function setFilter:TSMGroupList()
-  local v = {}
-  for i, name in ipairs(setFilter:GetTSMGroupList()) do
-    if name ~= "" then
-        display_name, count = string.gsub(name, "`", " / ")
-        v[name] = display_name
-    end
-  end
-  return v
-end
-
 function setFilter:GetOptions()
   local options = {
     enable = {
@@ -103,7 +91,7 @@ function setFilter:GetOptions()
       desc = L['Click the button to check all TSM groups.']
       type = 'execute',
       func = function()
-        for i, name in setFilter:TSMGroupList() do
+        for i, name in options.shown.values() do
           options.shown.set(i) = true
         end
       end
@@ -113,7 +101,7 @@ function setFilter:GetOptions()
       desc = L['Click the button to uncheck all TSM groups.']
       type = 'execute',
       func = function()
-        for i, name in setFilter:TSMGroupList() do
+        for i, name in options.shown.values() do
           options.shown.set(i) = false
         end
       end
