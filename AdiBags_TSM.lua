@@ -57,6 +57,22 @@ function setFilter:Filter(slotData)
   until (tsmpath == nil or tsmpath == "")
 end
 
+-- Set all the values in the list to the given value
+function setFilter:SetAllOptions(setTo)
+  if not self.db.profile.enable then
+    return
+  end
+
+  if setTo ~= true and setTo ~= false then
+    return
+  end
+
+  shown = self.db.profile.shown
+  for i, name in shown do
+    shown.set(i) = setTo
+  end
+end
+
 function setFilter:GetOptions()
   local options = {
     enable = {
@@ -91,9 +107,7 @@ function setFilter:GetOptions()
       desc = L['Click the button to check all TSM groups.']
       type = 'execute',
       func = function()
-        for i, name in options.shown.values() do
-          options.shown.set(i) = true
-        end
+        setFilter:SetAllOptions(true)
       end
     },
     disableAll = {
@@ -101,9 +115,7 @@ function setFilter:GetOptions()
       desc = L['Click the button to uncheck all TSM groups.']
       type = 'execute',
       func = function()
-        for i, name in options.shown.values() do
-          options.shown.set(i) = false
-        end
+        setFilter:SetAllOptions(false)
       end
     }
   }
