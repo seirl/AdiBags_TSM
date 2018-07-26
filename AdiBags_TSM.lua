@@ -69,9 +69,20 @@ function setFilter:GetTSMGroupList()
     return res
 end
 
+--[[ Get all the TSM group strings ]]
+function setFilter:TSMGroupList()
+  local v = {}
+  for i, name in ipairs(setFilter:GetTSMGroupList()) do
+    if name ~= "" then
+        display_name, count = string.gsub(name, "`", " / ")
+        v[name] = display_name
+    end
+  end
+  return v
+end
+
 function setFilter:GetOptions()
-  local values = {}
-  return {
+  local options = {
     enable = {
       name = L['Enable TSM groups'],
       desc = L['Check this if you want to separate items in their TSM groups.'],
@@ -83,17 +94,29 @@ function setFilter:GetOptions()
         desc = L["(Note: Different groups with the same name will be merged)"],
         type = 'multiselect',
         order = 20,
-        values = function()
-            wipe(values)
-            for i, name in ipairs(setFilter:GetTSMGroupList()) do
-                if name ~= "" then
-                    display_name, count = string.gsub(name, "`", " / ")
-                    values[name] = display_name
-                end
-            end
-            return values
-        end,
+        values = setFilter:TSMGroupList,
         width = 'double',
     },
-  }, addon:GetOptionHandler(self, false, function() return self:Update() end)
+    enableAll = {
+      name = L['Enable All Groups'],
+      desc = L['Click the button to check all TSM groups.']
+      type = 'execute',
+      func = function()
+        for i, name in setFilter:TSMGroupList() do
+          options.shown.set(i) = true
+        end
+      end
+    },
+    disableAll = {
+      name = L['Disable All Groups'],
+      desc = L['Click the button to uncheck all TSM groups.']
+      type = 'execute',
+      func = function()
+        for i, name in setFilter:TSMGroupList() do
+          options.shown.set(i) = false
+        end
+      end
+    }
+  }
+  return options, addon:GetOptionHandler(self, false, function() return self:Update() end)
 end
