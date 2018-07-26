@@ -57,6 +57,14 @@ function setFilter:Filter(slotData)
   until (tsmpath == nil or tsmpath == "")
 end
 
+function setFilter:SetAllOptions(setTo)
+  assert(type(setTo) == 'boolean')
+
+  for i, name in ipairs(TSM_API.GetGroupPaths({})) do
+    self.db.profile.shown[name] = setTo
+  end
+end
+
 function setFilter:GetOptions()
   local values = {}
   return {
@@ -66,11 +74,29 @@ function setFilter:GetOptions()
       type = 'toggle',
       order = 10,
     },
+    enableAll = {
+      name = L['Check all Groups'],
+      desc = L['Click to check all TSM groups.'],
+      type = 'execute',
+      order = 20,
+      func = function()
+        setFilter:SetAllOptions(true)
+      end
+    },
+    disableAll = {
+      name = L['Uncheck all Groups'],
+      desc = L['Click to uncheck all TSM groups.'],
+      type = 'execute',
+      order = 30,
+      func = function()
+        setFilter:SetAllOptions(false)
+      end
+    },
     shown = {
         name = L['TSM Groups to show'],
         desc = L["(Note: Different groups with the same name will be merged)"],
         type = 'multiselect',
-        order = 20,
+        order = 40,
         values = function()
             wipe(values)
             for i, name in ipairs(TSM_API.GetGroupPaths({})) do
