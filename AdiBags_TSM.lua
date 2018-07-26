@@ -67,7 +67,11 @@ function setFilter:GetOptions()
             wipe(values)
             for i, name in ipairs(TSM_API.GetGroupPaths({})) do
                 if name ~= "" then
-                    display_name, count = string.gsub(name, "`", " / ")
+                    display_name, count = string.gsub(name, "`", " > ")
+                    if count > 0 then
+                        display_name = (string.rep(" ", count * 4) ..
+                                        display_name)
+                    end
                     values[name] = display_name
                 end
             end
