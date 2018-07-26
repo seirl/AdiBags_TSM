@@ -42,11 +42,19 @@ function setFilter:Filter(slotData)
   end
 
   tsmpath = TSM_API.GetGroupPathByItem(slotData.link)
-  shown = self.db.profile.shown[tsmpath]
-  if tsmpath ~= nil and tsmpath ~= "" and shown ~= nil and shown then
-      path, groupname = TSM_API.SplitGroupPath(tsmpath)
-      return groupname
+  if tsmpath == nil then
+    return
   end
+
+  -- Get the lowest parent group of the item present in the whitelist.
+  repeat
+    shown = self.db.profile.shown[tsmpath]
+    parent_path, groupname = TSM_API.SplitGroupPath(tsmpath)
+    if shown ~= nil and shown then
+      return groupname
+    end
+    tsmpath = parent_path
+  until (tsmpath == nil or tsmpath == "")
 end
 
 function setFilter:GetOptions()
