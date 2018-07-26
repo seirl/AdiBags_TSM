@@ -41,32 +41,20 @@ function setFilter:Filter(slotData)
     return
   end
 
-  itemstring = TSMAPI_FOUR.Item.ToItemString(slotData.link)
-  if itemstring == nil then
+  tsmpath = TSM_API.GetGroupPathByItem(slotData.link)
+  if tsmpath == nil then
     return
   end
 
-  tsmpath = TSMAPI_FOUR.Groups.GetPathByItem(itemstring)
-  shown = self.db.profile.shown[tsmpath]
-  if tsmpath ~= nil and tsmpath ~= "" and shown ~= nil and shown then
-      path, groupname = TSMAPI_FOUR.Groups.SplitPath(tsmpath)
+  -- Get the lowest parent group of the item present in the whitelist.
+  repeat
+    shown = self.db.profile.shown[tsmpath]
+    parent_path, groupname = TSM_API.SplitGroupPath(tsmpath)
+    if shown ~= nil and shown then
       return groupname
-  end
-end
-
-function setFilter:GetTSMGroupList()
-    -- Horrible hack to get the list of groups from the TSM database.
-    -- There is a function Groups:GetSortedGroupPathList in
-    -- Core/Libs/Groups.lua but it's not accessible in TSMAPI, so I'm using
-    -- this hack in the meantime.
-    local res = {}
-    local db = TradeSkillMasterDB
-    local char = strjoin(' - ', UnitName("player"), GetRealmName())
-    local profile = db['_currentProfile'][char] or 'Default'
-    for k, v in pairs(db["p@" .. profile .. "@userData@groups"]) do
-        tinsert(res, k)
     end
-    return res
+    tsmpath = parent_path
+  until (tsmpath == nil or tsmpath == "")
 end
 
 function setFilter:GetOptions()
@@ -85,9 +73,13 @@ function setFilter:GetOptions()
         order = 20,
         values = function()
             wipe(values)
-            for i, name in ipairs(setFilter:GetTSMGroupList()) do
+            for i, name in ipairs(TSM_API.GetGroupPaths({})) do
                 if name ~= "" then
-                    display_name, count = string.gsub(name, "`", " / ")
+                    display_name, count = string.gsub(name, "`", " > ")
+                    if count > 0 then
+                        display_name = (string.rep(" ", count * 4) ..
+                                        display_name)
+                    end
                     values[name] = display_name
                 end
             end
