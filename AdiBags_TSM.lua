@@ -57,14 +57,46 @@ function setFilter:Filter(slotData)
   until (tsmpath == nil or tsmpath == "")
 end
 
+-- Set all the values in the list to the given value
+function setFilter:SetAllOptions(setTo)
+  if not self.db.profile.enable then
+    return
+  end
+
+  if setTo ~= true and setTo ~= false then
+    return
+  end
+
+  shown = self.db.profile.shown
+  for i, name in pairs(shown) do
+    shown[i] = setTo --doesn't seem to actually set the values
+  end
+end
+
 function setFilter:GetOptions()
   local values = {}
-  return {
+  local options = {
     enable = {
       name = L['Enable TSM groups'],
       desc = L['Check this if you want to separate items in their TSM groups.'],
       type = 'toggle',
       order = 10,
+    },
+    enableAll = {
+      name = L['Enable All Groups'],
+      desc = L['Click the button to check all TSM groups.'],
+      type = 'execute',
+      func = function()
+        setFilter:SetAllOptions(true)
+      end
+    },
+    disableAll = {
+      name = L['Disable All Groups'],
+      desc = L['Click the button to uncheck all TSM groups.'],
+      type = 'execute',
+      func = function()
+        setFilter:SetAllOptions(false)
+      end
     },
     shown = {
         name = L['TSM Groups to show'],
@@ -86,6 +118,7 @@ function setFilter:GetOptions()
             return values
         end,
         width = 'double',
-    },
-  }, addon:GetOptionHandler(self, false, function() return self:Update() end)
+    }
+  }
+  return options, addon:GetOptionHandler(self, false, function() return self:Update() end)
 end
