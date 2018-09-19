@@ -18,7 +18,7 @@ setFilter.uiDesc = L['Separate items in their TSM groups']
 
 function setFilter:OnInitialize()
   self.db = addon.db:RegisterNamespace('TSM', {
-    profile = { enable = true, shown = { ['*'] = false } },
+    profile = { shown = { ['*'] = false } },
     char = {  },
   })
 end
@@ -37,10 +37,6 @@ end
 
 local groups = {}
 function setFilter:Filter(slotData)
-  if not self.db.profile.enable then
-    return
-  end
-
   local item_string = TSM_API.ToItemString(slotData.link)
   local item_link = item_string and TSM_API.GetItemLink(item_string)
   if not item_link then
@@ -71,12 +67,6 @@ end
 function setFilter:GetOptions()
   local values = {}
   return {
-    enable = {
-      name = L['Enable TSM groups'],
-      desc = L['Check this if you want to separate items in their TSM groups.'],
-      type = 'toggle',
-      order = 10,
-    },
     enableAll = {
       name = L['Check all Groups'],
       desc = L['Click to check all TSM groups.'],
