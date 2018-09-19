@@ -41,7 +41,13 @@ function setFilter:Filter(slotData)
     return
   end
 
-  tsmpath = TSM_API.GetGroupPathByItem(slotData.link)
+  local item_string = TSM_API.ToItemString(slotData.link)
+  local item_link = item_string and TSM_API.GetItemLink(item_string)
+  if not item_link then
+      return
+  end
+
+  tsmpath = TSM_API.GetGroupPathByItem(item_link)
 
   -- Get the lowest parent group of the item present in the whitelist.
   while (tsmpath ~= nil and tsmpath ~= "") do
