@@ -1,9 +1,9 @@
-## Interface: 80200
+## Interface: 80205
 
 ## Title: AdiBags - Filter for TSM Groups
 ## Notes: Adds TSM groups to AdiBags.
 ## Author: seirl
-## Version: 0.5
+## Version: 0.6
 
 ## Dependencies: AdiBags TradeSkillMaster
 
